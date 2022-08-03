@@ -4,11 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LmsApplication {
+public class BackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LmsApplication.class, args);
-		System.out.println("Leave Management System - Szabadságkezelő Rendszer");
+		SpringApplication.run(BackendApplication.class, args);
 	}
 
 }
