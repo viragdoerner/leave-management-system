@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
-@RequestMapping("/leave-request")
+@RequestMapping("/api")
 @RestController
 public class LeaveRequestController {
-
 
         private final LeaveRequestService leaveService;
 
