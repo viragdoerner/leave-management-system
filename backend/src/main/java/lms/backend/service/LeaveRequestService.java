@@ -1,7 +1,7 @@
 package lms.backend.service;
 
-import lms.dao.LeaveRequestRepository;
-import lms.model.LeaveRequest;
+import lms.backend.dao.LeaveRequestRepository;
+import lms.backend.model.LeaveRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
