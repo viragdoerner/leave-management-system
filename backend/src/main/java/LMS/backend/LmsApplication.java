@@ -1,15 +1,14 @@
-package LMS;
+package lms.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LMSBackendApplication {
+public class LmsApplication {
 
 	public static void main(String[] args) {
-
-		SpringApplication.run(LMSBackendApplication.class, args);
-		System.out.println("hello");
+		SpringApplication.run(LmsApplication.class, args);
+		System.out.println("Leave Management System - Szabadságkezelő Rendszer");
 	}
 
 }

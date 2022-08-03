@@ -1,10 +1,10 @@
-package LMS;
+package lms.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LMSBackendApplicationTests {
+class LmsApplicationTests {
 
 	@Test
 	void contextLoads() {

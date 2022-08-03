@@ -1,6 +1,6 @@
-package LMS.dao;
+package lms.backend.dao;
 
-import LMS.model.LeaveRequest;
+import lms.backend.model.LeaveRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

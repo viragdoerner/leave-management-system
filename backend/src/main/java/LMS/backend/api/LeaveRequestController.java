@@ -1,7 +1,7 @@
-package LMS.api;
+package lms.backend.api;
 
-import LMS.model.LeaveRequest;
-import LMS.service.LeaveRequestService;
+import lms.backend.model.LeaveRequest;
+import lms.backend.service.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package LMS.model;
+package lms.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "leave_request")
+@Table
 public class LeaveRequest {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
