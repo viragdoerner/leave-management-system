@@ -5,8 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    snackbar: {},
   },
   mutations: {
+    showMessage(state, payload) {
+      state.snackbar = payload;
+    },
   },
   actions: {
   },
