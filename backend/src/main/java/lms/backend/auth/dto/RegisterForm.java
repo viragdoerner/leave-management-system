@@ -1,5 +1,6 @@
 package lms.backend.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 
 import javax.validation.constraints.NotBlank;
@@ -18,8 +19,13 @@ public class RegisterForm {
     @Size(min = 6, max = 40)
     private String password;
 
-    @NotNull
-    private boolean isAdmin;
+    @NotBlank
+    @JsonProperty("isAdmin")
+    private Boolean isAdmin;
+
+    public RegisterForm() {
+    }
+
 
     public String getEmail() {
         return email;
@@ -49,11 +55,11 @@ public class RegisterForm {
         return isAdmin;
     }
 
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
-    }
-
     public Boolean getAdmin() {
         return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 }
