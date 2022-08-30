@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -84,6 +85,67 @@ public class AuthController {
         userRepository.save(user);
 
         return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
+    }
+    @PostMapping("/setup/roles")
+    public ResponseEntity<?> setupRoles() {
+
+        //hozzáadom a használt szerepeket
+        roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+        roleRepository.save(new Role(RoleName.ROLE_USER));
+
+        return new ResponseEntity<>("Admin and user roles successfully added!",
+                HttpStatus.OK);
+    }
+    @PostMapping("/setup/admin")
+    public ResponseEntity<?> setupAdmin() {
+
+        //leellenőrzöm hogy létre lett-e már hozva ilyen felhasználó
+        if (userRepository.existsByEmail("boss@boss.com")) {
+            return new ResponseEntity<>("Fail -> Email is already taken!",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        //hozzáadom az admint
+        User user = new User("The Boss", "boss@boss.com","boss@boss.com",
+                encoder.encode("password"));
+
+        Set<Role> roles = new HashSet<>();
+        Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find. Run POST request /api/auth/setup/roles first!"));
+        roles.add(adminRole);
+        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find. Run POST request /api/auth/setup/roles first!"));
+        roles.add(userRole);
+        user.setRoles(roles);
+
+        userRepository.save(user);
+
+        return new ResponseEntity<>("Admin user succesfully added!",
+                HttpStatus.OK);
+    }
+    @PostMapping("/setup/user")
+    public ResponseEntity<?> setupUser() {
+
+        //leellenőrzöm hogy létre lett-e már hozva ilyen felhasználó
+        if (userRepository.existsByEmail("user@user.com")) {
+            return new ResponseEntity<>("Fail -> Email is already taken!",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        //hozzáadom az admint
+        User user = new User("A User", "user@user.com","user@user.com",
+                encoder.encode("password"));
+
+        Set<Role> roles = new HashSet<>();
+        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find. Run POST request /api/auth/setup/roles first!"));
+        roles.add(userRole);
+        user.setRoles(roles);
+
+        userRepository.save(user);
+
+        return new ResponseEntity<>("Simple user succesfully added!",
+                HttpStatus.OK);
     }
 }
 
