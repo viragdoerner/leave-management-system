@@ -38,7 +38,7 @@
             </v-list-item-icon>
             <v-list-item-title>Szabadságok kezelése</v-list-item-title>
           </v-list-item>
-          <v-list-item to="/admin/users"  v-if="$store.getters.isAdmin">
+          <v-list-item to="/admin-users"  v-if="$store.getters.isAdmin">
             <v-list-item-icon>
               <v-icon>mdi-account-group</v-icon>
             </v-list-item-icon>
