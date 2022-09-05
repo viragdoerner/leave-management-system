@@ -10,6 +10,8 @@ import lms.backend.exception.CustomMessageException;
 import lms.backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,12 +24,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
+        this.authenticationManager = authenticationManager;
     }
 
     public Iterable<UserDTO> getUsers() {
@@ -132,7 +136,10 @@ public class UserService {
     }
 
     private boolean checkIfValidOldPassword(User currentUser, String oldPassword) {
-        return currentUser.getPassword() == encoder.encode(oldPassword);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(currentUser.getEmail(), oldPassword));
+
+        return authentication.isAuthenticated();
     }
 
     public void updateAnyUserPassword(String password, String oldPassword, Long id) {
@@ -142,5 +149,6 @@ public class UserService {
         }
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No user has been found with given id"));
         user.setPassword(encoder.encode(password));
+        userRepository.save(user);
     }
 }

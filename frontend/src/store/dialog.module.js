@@ -1,47 +1,29 @@
 export const dialog = {
     namespaced: true,
     state: {
-        dialogData: {
+        confirmDialogData: {
             isOpen: false,
             title: "",
-            text: "",
             confirmButton: "OK",
             confirmButtonColor: "success",
-            hasForm: false,
-            form: {
-                textfieldLabel: "",
-                textfieldRequired: true,
-                dropdownLabel: "",
-                dropdownItems: [],
-            },
+        },
+        updatePasswordDialogData:{
+            isOpen: false
         }
     },
     mutations: {
         closeDialog(state) {
-            state.dialogData.isOpen = false;
+            state.confirmDialogData.isOpen = false;
+            state.updatePasswordDialogData.isOpen = false;
         },
-        openSimpleDialog(state, payload) {
-            state.dialogData.title = payload.title || "";
-            state.dialogData.text = payload.text || "";
-            state.dialogData.confirmButtonColor = payload.confirmButtonColor || "success";
-            state.dialogData.confirmButton = payload.confirmButton || "OK";
-            state.dialogData.hasForm = false;
-            state.dialogData.confirmButton = payload.confirmButton;
-            state.dialogData.isOpen = true;
+        openConfirmDialog(state, payload) {
+            state.confirmDialogData.title = payload.title || "";
+            state.confirmDialogData.confirmButtonColor = payload.confirmButtonColor || "success";
+            state.confirmDialogData.confirmButton = payload.confirmButton || "OK";
+            state.confirmDialogData.isOpen = true;
         },
-        openDialogWithForm(state, payload) {
-            state.dialogData.title = payload.title || "";
-            state.dialogData.text = payload.text || "";
-            state.dialogData.confirmButtonColor = payload.confirmButtonColor || "success";
-            state.dialogData.confirmButton = payload.confirmButton || "OK";
-            state.dialogData.confirmButton = payload.confirmButton;
-
-            state.dialogData.hasForm = true;
-            state.dialogData.form.textfieldLabel = payload.form.textfieldLabel || "";
-            state.dialogData.form.textfieldRequired = payload.form.textfieldRequired || "";
-            state.dialogData.form.dropdownLabel = payload.form.dropdownLabel || "";
-            state.dialogData.form.dropdownItems = payload.form.dropdownItems || "";
-            state.dialogData.isOpen = true;
+        openUpdatePasswordDialog(state) {
+            state.updatePasswordDialogData.isOpen = true;
         },
     }
 
