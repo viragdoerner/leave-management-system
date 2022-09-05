@@ -26,20 +26,20 @@ public class UserDTO {
     private int holidays;
 
     @NotBlank
-    @JsonProperty("worksOnSaturday")
-    private Boolean worksOnSaturday;
+    @JsonProperty("saturday")
+    private Boolean saturday;
 
 
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String fullname, String email, int holidays, Boolean worksOnSaturday) {
+    public UserDTO(Long id, String fullname, String email, int holidays, Boolean saturday) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
         this.holidays =holidays;
-        this.worksOnSaturday = worksOnSaturday;
+        this.saturday = saturday;
     }
 
     public Long getId() {
@@ -73,11 +73,11 @@ public class UserDTO {
         this.holidays = holidays;
     }
 
-    public Boolean isWorksOnSaturday() {
-        return worksOnSaturday;
+    public Boolean getSaturday() {
+        return saturday;
     }
 
-    public void setWorksOnSaturday(Boolean worksOnSaturday) {
-        this.worksOnSaturday = worksOnSaturday;
+    public void setSaturday(Boolean saturday) {
+        this.saturday = saturday;
     }
 }

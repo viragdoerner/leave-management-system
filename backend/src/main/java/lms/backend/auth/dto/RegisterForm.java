@@ -27,8 +27,8 @@ public class RegisterForm {
     private int holidays;
 
     @NotBlank
-    @JsonProperty("worksOnSaturday")
-    private Boolean worksOnSaturday;
+    @JsonProperty("saturday")
+    private Boolean saturday;
 
     public RegisterForm() {
     }
@@ -78,11 +78,11 @@ public class RegisterForm {
         this.holidays = holidays;
     }
 
-    public Boolean getWorksOnSaturday() {
-        return worksOnSaturday;
+    public Boolean getSaturday() {
+        return saturday;
     }
 
-    public void setWorksOnSaturday(Boolean worksOnSaturday) {
-        this.worksOnSaturday = worksOnSaturday;
+    public void setSaturday(Boolean saturday) {
+        this.saturday = saturday;
     }
 }

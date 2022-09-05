@@ -9,6 +9,9 @@ import lms.backend.dao.UserRepository;
 import lms.backend.exception.CustomMessageException;
 import lms.backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,18 +40,29 @@ public class UserService {
     }
 
     public UserDTO convertUser(User user) {
-        UserDTO dto = new UserDTO(user.getId(), user.getFullname(), user.getEmail(), user.getHolidays(), user.isWorksOnSaturday());
+        UserDTO dto = new UserDTO(user.getId(), user.getFullname(), user.getEmail(), user.getHolidays(), user.getSaturday());
         return dto;
     }
 
-    public User updateUser(UserDTO newUser) throws CustomMessageException {
+    public User updateAnyUser(UserDTO newUser) throws CustomMessageException {
         User oldUser = this.userRepository.findById(newUser.getId()).orElseThrow(() ->
                 new CustomMessageException("Nincs ilyen felhasználó"));
         oldUser.setUsername(newUser.getEmail());
         oldUser.setFullname(newUser.getFullname());
         oldUser.setEmail(newUser.getEmail());
         oldUser.setHolidays(newUser.getHolidays());
-        oldUser.setWorksOnSaturday(newUser.isWorksOnSaturday());
+        oldUser.setSaturday(newUser.getSaturday());
+
+        return this.userRepository.save(oldUser);
+    }
+
+    public User updateUser(UserDTO newUser) throws CustomMessageException {
+        User oldUser =  getCurrentFullUser();
+        oldUser.setUsername(newUser.getEmail());
+        oldUser.setFullname(newUser.getFullname());
+        oldUser.setEmail(newUser.getEmail());
+        oldUser.setHolidays(newUser.getHolidays());
+        oldUser.setSaturday(newUser.getSaturday());
 
         return this.userRepository.save(oldUser);
     }
@@ -66,7 +80,7 @@ public class UserService {
 
         // Creating user's account
         User user = new User(signUpRequest.getFullname(), signUpRequest.getEmail(),signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()), signUpRequest.getHolidays(), signUpRequest.getWorksOnSaturday());
+                encoder.encode(signUpRequest.getPassword()), signUpRequest.getHolidays(), signUpRequest.getSaturday());
 
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
@@ -81,5 +95,41 @@ public class UserService {
         userRepository.save(user);
 
         return this.convertUser(user);
+    }
+
+    public User getCurrentFullUser() {
+        String currentUsername = getCurrentUsername();
+        User user = userRepository.findByEmail(currentUsername).orElseThrow(() -> new RuntimeException("No user has been found with given email"));
+        return user;
+    }
+
+    String getCurrentUsername(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            return currentUserName;
+        }
+        throw new CustomMessageException("Nincs bejelentkezett felhasználó!");
+    }
+
+    public void updateUserPassword(String password, String oldPassword) {
+        User currentUser = this.getCurrentFullUser();
+        if (!checkIfValidOldPassword(currentUser, oldPassword)) {
+            throw new CustomMessageException("Wrong password!");
+        }
+        currentUser.setPassword(encoder.encode(password));
+    }
+
+    private boolean checkIfValidOldPassword(User currentUser, String oldPassword) {
+        return currentUser.getPassword() === encoder.encode(oldPassword);
+    }
+
+    public void updateAnyUserPassword(String password, String oldPassword, Long id) {
+        User currentUser = this.getCurrentFullUser();
+        if (!checkIfValidOldPassword(currentUser, oldPassword)) {
+            throw new CustomMessageException("Wrong password!");
+        }
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No user has been found with given id"));
+        user.setPassword(encoder.encode(password));
     }
 }

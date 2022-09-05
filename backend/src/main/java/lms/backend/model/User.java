@@ -35,7 +35,8 @@ public class User {
     @Size(min = 3, max = 50)
     private String username;
 
-    @NaturalId
+    @NaturalId(mutable=true)
+    @Column(name = "email", unique=true)
     @NotBlank
     @Size(max = 50)
     @Email
@@ -50,8 +51,8 @@ public class User {
     private int holidays;
 
     @NotBlank
-    @JsonProperty("worksOnSaturday")
-    private Boolean worksOnSaturday;
+    @JsonProperty("saturday")
+    private Boolean saturday;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
@@ -62,13 +63,13 @@ public class User {
     public User() {
     }
 
-    public User(String fullname, String username, String email, String password, int holidays, Boolean worksOnSaturday) {
+    public User(String fullname, String username, String email, String password, int holidays, Boolean saturday) {
         this.fullname = fullname;
         this.username = username;
         this.email = email;
         this.password = password;
         this.holidays = holidays;
-        this.worksOnSaturday = worksOnSaturday;
+        this.saturday = saturday;
     }
 
     public Long getId() {
@@ -127,11 +128,11 @@ public class User {
         this.holidays = holidays;
     }
 
-    public Boolean isWorksOnSaturday() {
-        return worksOnSaturday;
+    public Boolean getSaturday() {
+        return saturday;
     }
 
-    public void setWorksOnSaturday(Boolean worksOnSaturday) {
-        this.worksOnSaturday = worksOnSaturday;
+    public void setSaturday(Boolean saturday) {
+        this.saturday = saturday;
     }
 }
