@@ -23,6 +23,13 @@ public class RegisterForm {
     @JsonProperty("isAdmin")
     private Boolean isAdmin;
 
+    @NotBlank
+    private int holidays;
+
+    @NotBlank
+    @JsonProperty("worksOnSaturday")
+    private Boolean worksOnSaturday;
+
     public RegisterForm() {
     }
 
@@ -61,5 +68,21 @@ public class RegisterForm {
 
     public void setAdmin(Boolean admin) {
         isAdmin = admin;
+    }
+
+    public int getHolidays() {
+        return holidays;
+    }
+
+    public void setHolidays(int holidays) {
+        this.holidays = holidays;
+    }
+
+    public Boolean getWorksOnSaturday() {
+        return worksOnSaturday;
+    }
+
+    public void setWorksOnSaturday(Boolean worksOnSaturday) {
+        this.worksOnSaturday = worksOnSaturday;
     }
 }

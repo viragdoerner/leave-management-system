@@ -1,5 +1,6 @@
 package lms.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lms.backend.auth.model.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.NaturalId;
@@ -45,6 +46,12 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @NotBlank
+    private int holidays;
+
+    @NotBlank
+    @JsonProperty("worksOnSaturday")
+    private Boolean worksOnSaturday;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
@@ -55,11 +62,13 @@ public class User {
     public User() {
     }
 
-    public User(String fullname, String username, String email, String password) {
+    public User(String fullname, String username, String email, String password, int holidays, Boolean worksOnSaturday) {
         this.fullname = fullname;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.holidays = holidays;
+        this.worksOnSaturday = worksOnSaturday;
     }
 
     public Long getId() {
@@ -108,5 +117,21 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public int getHolidays() {
+        return holidays;
+    }
+
+    public void setHolidays(int holidays) {
+        this.holidays = holidays;
+    }
+
+    public Boolean isWorksOnSaturday() {
+        return worksOnSaturday;
+    }
+
+    public void setWorksOnSaturday(Boolean worksOnSaturday) {
+        this.worksOnSaturday = worksOnSaturday;
     }
 }

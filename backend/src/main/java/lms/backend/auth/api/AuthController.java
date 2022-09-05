@@ -5,6 +5,7 @@ import lms.backend.auth.JwtResponse;
 import lms.backend.auth.dto.LoginForm;
 import lms.backend.auth.dto.RegisterForm;
 import lms.backend.auth.dao.RoleRepository;
+import lms.backend.auth.dto.UserDTO;
 import lms.backend.auth.model.Role;
 import lms.backend.auth.model.RoleName;
 import lms.backend.dao.UserRepository;
@@ -60,32 +61,6 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
     }
 
-    @Secured("ROLE_ADMIN")
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterForm signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getEmail())) {
-            return new ResponseEntity<>("Email is already in use!",
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        // Creating user's account
-        User user = new User(signUpRequest.getFullname(), signUpRequest.getEmail(),signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
-
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not found."));
-        roles.add(userRole);
-        if(signUpRequest.isAdmin()){
-            Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
-                    .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Admin Role not found."));
-            roles.add(adminRole);
-        }
-        user.setRoles(roles);
-        userRepository.save(user);
-
-        return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
-    }
     @PostMapping("/setup/roles")
     public ResponseEntity<?> setupRoles() {
 
@@ -107,7 +82,7 @@ public class AuthController {
 
         //hozzáadom az admint
         User user = new User("The Boss", "boss@boss.com","boss@boss.com",
-                encoder.encode("password"));
+                encoder.encode("password"), 0, false);
 
         Set<Role> roles = new HashSet<>();
         Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
@@ -134,7 +109,7 @@ public class AuthController {
 
         //hozzáadom az admint
         User user = new User("A User", "user@user.com","user@user.com",
-                encoder.encode("password"));
+                encoder.encode("password"), 50, false);
 
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)

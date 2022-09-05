@@ -1,5 +1,6 @@
 package lms.backend.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.NaturalId;
 
 import javax.validation.constraints.Email;
@@ -21,15 +22,24 @@ public class UserDTO {
     @Email
     private String email;
 
+    @NotBlank
+    private int holidays;
+
+    @NotBlank
+    @JsonProperty("worksOnSaturday")
+    private Boolean worksOnSaturday;
+
 
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String fullname, String email) {
+    public UserDTO(Long id, String fullname, String email, int holidays, Boolean worksOnSaturday) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
+        this.holidays =holidays;
+        this.worksOnSaturday = worksOnSaturday;
     }
 
     public Long getId() {
@@ -55,5 +65,19 @@ public class UserDTO {
         this.email = email;
     }
 
+    public int getHolidays() {
+        return holidays;
+    }
 
+    public void setHolidays(int holidays) {
+        this.holidays = holidays;
+    }
+
+    public Boolean isWorksOnSaturday() {
+        return worksOnSaturday;
+    }
+
+    public void setWorksOnSaturday(Boolean worksOnSaturday) {
+        this.worksOnSaturday = worksOnSaturday;
+    }
 }

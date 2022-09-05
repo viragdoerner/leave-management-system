@@ -1,13 +1,21 @@
 package lms.backend.api;
 
+import lms.backend.auth.dto.RegisterForm;
 import lms.backend.auth.dto.UserDTO;
 import lms.backend.auth.UserService;
+import lms.backend.auth.model.Role;
+import lms.backend.auth.model.RoleName;
+import lms.backend.exception.CustomMessageException;
+import lms.backend.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -36,6 +44,14 @@ public class UserController {
         return new ResponseEntity<>("User info successfuly updated",
                 HttpStatus.OK);
     }
+
+    @Secured("ROLE_ADMIN")
+    @PostMapping("/create")
+    public UserDTO createUser(@Valid @RequestBody RegisterForm signUpRequest) {
+
+            return userService.createUser(signUpRequest);
+
+}
 
     @Secured("ROLE_ADMIN")
     @Transactional
