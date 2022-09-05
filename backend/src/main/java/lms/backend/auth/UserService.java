@@ -68,8 +68,19 @@ public class UserService {
     }
 
     public void deleteUserById(long id) throws CustomMessageException{
-        userRepository.findById(id).orElseThrow(() -> new CustomMessageException("Nincs felhasználó ilyen id-val!"));
 
+        User user = userRepository.findById(id).orElseThrow(() -> new CustomMessageException("Nincs felhasználó ilyen id-val!"));
+        Role isAdmin = user.getRoles().stream().filter(x -> x.getName().equals(RoleName.ROLE_ADMIN)).findFirst().orElse(null);
+
+        if (isAdmin != null) {
+            List<User> admins = userRepository.findAllAdmin(RoleName.ROLE_ADMIN);
+            if (admins.size() == 1) {
+                throw new CustomMessageException("Nem lehet kitörölni az utolsó admint!");
+            }
+        }
+
+        user.setRoles(null);
+        this.userRepository.saveAndFlush(user);
         this.userRepository.deleteById(id);
     }
 
@@ -121,7 +132,7 @@ public class UserService {
     }
 
     private boolean checkIfValidOldPassword(User currentUser, String oldPassword) {
-        return currentUser.getPassword() === encoder.encode(oldPassword);
+        return currentUser.getPassword() == encoder.encode(oldPassword);
     }
 
     public void updateAnyUserPassword(String password, String oldPassword, Long id) {

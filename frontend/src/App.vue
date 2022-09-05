@@ -11,7 +11,7 @@
 
 <script>
 import NavBar from "./components/NavBar.vue";
-import SnackbarMessage from "./components/SnackbarMessage.vue";
+import SnackbarMessage from "./components/Snackbar.vue";
 export default {
   components: { NavBar, SnackbarMessage },
   name: "App",

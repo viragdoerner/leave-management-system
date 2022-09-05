@@ -16,7 +16,7 @@
 <script>
 import { mapState } from "vuex";
 export default {
-  name: "SnackbarMessage",
+  name: "Snackbar",
   data: () => ({
   }),
   computed: {
