@@ -9,12 +9,18 @@ export const dialog = {
         },
         updatePasswordDialogData:{
             isOpen: false
-        }
+        },
+        userDialogData: {
+            isOpen: false,
+            title: "",
+            edit: true
+        },
     },
     mutations: {
         closeDialog(state) {
             state.confirmDialogData.isOpen = false;
             state.updatePasswordDialogData.isOpen = false;
+            state.userDialogData.isOpen = false;
         },
         openConfirmDialog(state, payload) {
             state.confirmDialogData.title = payload.title || "";
@@ -24,6 +30,11 @@ export const dialog = {
         },
         openUpdatePasswordDialog(state) {
             state.updatePasswordDialogData.isOpen = true;
+        },
+        openUserDialog(state, payload) {
+            state.userDialogData.title = payload.title || "";
+            state.userDialogData.isOpen = true;
+            state.userDialogData.edit = payload.edit;
         },
     }
 

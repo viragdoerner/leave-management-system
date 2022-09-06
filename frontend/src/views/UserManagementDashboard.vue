@@ -3,11 +3,20 @@
     <v-data-table :headers="headers" :items="users" class="elevation-1 col-12">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Felhasználók kezelése</v-toolbar-title>
+          <v-toolbar-title>Munkatársak kezelése</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+          <v-btn color="green" dark class="mb-2" @click="newUserDialog()">
+            Új munkatárs
+          </v-btn>
           <confirm-dialog v-on:confirm="deleteUser"></confirm-dialog>
-          <update-password-dialog v-on:confirm="updateUserPassword"></update-password-dialog>
+          <user-dialog
+            v-on:confirm="editOrAddUser"
+            :user="userToEdit"
+          ></user-dialog>
+          <update-password-dialog
+            v-on:confirm="updateUserPassword"
+          ></update-password-dialog>
         </v-toolbar>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
@@ -26,10 +35,11 @@
 import ApiService from "../services/api.service";
 import ConfirmDialog from "../components/dialog/ConfirmDialog.vue";
 import UpdatePasswordDialog from "../components/dialog/UpdatePasswordDialog.vue";
+import UserDialog from "../components/dialog/UserDialog.vue";
 export default {
   name: "UserManagementDashboard",
 
-  components: { ConfirmDialog, UpdatePasswordDialog },
+  components: { ConfirmDialog, UpdatePasswordDialog, UserDialog },
   data: () => ({
     headers: [
       { text: "Email", value: "email" },
@@ -50,7 +60,7 @@ export default {
       holidays: 0,
       saturday: 0,
     },
-    userToEdit: {}
+    userToEdit: {},
   }),
   methods: {
     initialize() {
@@ -77,8 +87,59 @@ export default {
       this.userToEdit = item;
       this.$store.commit("dialog/openUpdatePasswordDialog");
     },
-    editDialog(item) {},
-
+    editDialog(item) {
+      this.userToEdit = item;
+      this.$store.commit("dialog/openUserDialog", {
+        title: "Munkatárs adatainak módosítása",
+        edit: true
+      });
+    },
+    newUserDialog() {
+      this.$store.commit("dialog/openUserDialog", {
+        title: "Új munkatárs hozzáadása",
+        edit: false
+      });
+    },
+    editOrAddUser(response) {
+      if (response.edit) {
+        console.log("edit");
+        ApiService.PUT("user/any", response.user)
+          .then((response) => {
+            console.log("success");
+            this.userToEdit =  response.user;
+            this.$store.commit("showMessage", {
+              active: true,
+              color: "success",
+              message: "Sikeres módosítás",
+            });
+          })
+          .catch((error) => {
+            this.$store.commit("showMessage", {
+              active: true,
+              color: "error",
+              message: "Sikertelen mentés: " + error.message,
+            });
+          });
+      } else {
+        console.log("new");
+        ApiService.POST("user/create", response.user)
+          .then((response) => {
+            this.users.push(response.data);
+            this.$store.commit("showMessage", {
+              active: true,
+              color: "success",
+              message: "Sikeres mentés",
+            });
+          })
+          .catch((error) => {
+            this.$store.commit("showMessage", {
+              active: true,
+              color: "error",
+              message: "Sikertelen mentés: " + error.response.data,
+            });
+          });
+      }
+    },
     deleteUser() {
       var that = this;
       ApiService.DELETE("user/" + this.userToDelete.id)
@@ -100,8 +161,15 @@ export default {
           });
         });
     },
-    updateUserPassword(payload){
-      ApiService.PUT("user/password/any?old="+payload.old + "&new="+payload.new+"&id="+this.userToEdit.id )
+    updateUserPassword(payload) {
+      ApiService.PUT(
+        "user/password/any?old=" +
+          payload.old +
+          "&new=" +
+          payload.new +
+          "&id=" +
+          this.userToEdit.id
+      )
         .then((response) => {
           this.$store.commit("showMessage", {
             active: true,
@@ -113,10 +181,11 @@ export default {
           this.$store.commit("showMessage", {
             active: true,
             color: "error",
-            message: "Nem sikerült lecserélni a jelszót: " + error.response.data,
+            message:
+              "Nem sikerült lecserélni a jelszót: " + error.response.data,
           });
         });
-    }
+    },
   },
   mounted() {
     this.initialize();
