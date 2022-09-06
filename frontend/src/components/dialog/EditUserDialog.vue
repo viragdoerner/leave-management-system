@@ -1,11 +1,11 @@
 <template>
   <v-dialog
-    v-model="userDialogData.isOpen"
+    v-model="userEditDialogData.isOpen"
     max-width="600"
     :retain-focus="false"
   >
     <v-card>
-      <v-card-title> {{ userDialogData.title }} </v-card-title>
+      <v-card-title> {{ userEditDialogData.title }} </v-card-title>
       <v-card-text>
         <v-text-field
           v-model="form.email"
@@ -22,11 +22,6 @@
         <v-text-field
           v-model="form.holidays"
           label="Szabadnapok száma egy évben"
-        ></v-text-field>
-        <v-text-field
-          v-show="!userDialogData.edit"
-          v-model="form.password"
-          label="Jelszó"
         ></v-text-field>
         <v-checkbox
           v-model="form.saturday"
@@ -46,10 +41,10 @@
 import { mapState } from "vuex";
 
 export default {
-  name: "UserDialog",
+  name: "EditUserDialog",
   props: ["user"],
   data: () => ({
-    form: {},
+    form: { email: "", fullname: "", holidays: 0, saturday: false },
     rules: {
       email: (value) => /.+@.+\..+/.test(value) || "Érvénytelen e-mail",
       required: (value) => !!value || "Kötelező mező.",
@@ -57,54 +52,23 @@ export default {
     },
   }),
   computed: {
-    ...mapState("dialog", ["userDialogData"]),
-    opened() {
-      return this.userDialogData.isOpen;
-    },
-    emptyForm() {
-      console.log("computed:");
-      var form = {
-        email: "",
-        fullname: "",
-        holidays: 0,
-        saturday: false,
-        password: "",
-        isAdmin: false,
-      };
-      console.log(form);
-      return form;
-    },
+    ...mapState("dialog", ["userEditDialogData"]),
+
   },
-  mounted() {
-    this.form = this.emptyForm;
-  },
+  mounted() {},
   watch: {
-    // whenever question changes, this function will run
     user(newUser) {
-      this.form = newUser;
-    },
-    opened() {
-      if (this.userDialogData.edit) {
-        this.form = this.user;
-      } else {
-        console.log("reset form");
-        console.log(this.emptyForm);
-        this.form = this.emptyForm;
-      }
-    },
+      this.form = Object.assign({}, newUser);
+    }
   },
   methods: {
     confirm() {
       this.$store.commit("dialog/closeDialog");
-      this.$emit("confirm", {
-        edit: this.userDialogData.edit,
-        user: this.form,
-      });
-
-      this.form = this.user;
+      this.$emit("confirm", this.form);
+      this.form = Object.assign({}, this.user);
     },
     cancel() {
-      this.form = this.user;
+      this.form = Object.assign({}, this.user);
       this.$store.commit("dialog/closeDialog");
       this.$emit("cancel");
     },

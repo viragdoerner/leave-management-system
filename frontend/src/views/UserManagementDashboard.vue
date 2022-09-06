@@ -10,10 +10,11 @@
             Új munkatárs
           </v-btn>
           <confirm-dialog v-on:confirm="deleteUser"></confirm-dialog>
-          <user-dialog
-            v-on:confirm="editOrAddUser"
+          <edit-user-dialog
+            v-on:confirm="editUser"
             :user="userToEdit"
-          ></user-dialog>
+          ></edit-user-dialog>
+          <new-user-dialog v-on:confirm="addUser"></new-user-dialog>
           <update-password-dialog
             v-on:confirm="updateUserPassword"
           ></update-password-dialog>
@@ -21,7 +22,7 @@
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small @click="confirmDeleteDialog(item)"> mdi-delete </v-icon>
-        <v-icon small @click="editDialog(item)"> mdi-pencil </v-icon>
+        <v-icon small @click="editUserDialog(item)"> mdi-pencil </v-icon>
         <v-icon small @click="updatePasswordDialog(item)"> mdi-lock </v-icon>
       </template>
       <template v-slot:no-data>
@@ -35,11 +36,17 @@
 import ApiService from "../services/api.service";
 import ConfirmDialog from "../components/dialog/ConfirmDialog.vue";
 import UpdatePasswordDialog from "../components/dialog/UpdatePasswordDialog.vue";
-import UserDialog from "../components/dialog/UserDialog.vue";
+import EditUserDialog from "../components/dialog/EditUserDialog.vue";
+import NewUserDialog from "../components/dialog/NewUserDialog.vue";
 export default {
   name: "UserManagementDashboard",
 
-  components: { ConfirmDialog, UpdatePasswordDialog, UserDialog },
+  components: {
+    ConfirmDialog,
+    UpdatePasswordDialog,
+    EditUserDialog,
+    NewUserDialog,
+  },
   data: () => ({
     headers: [
       { text: "Email", value: "email" },
@@ -87,58 +94,53 @@ export default {
       this.userToEdit = item;
       this.$store.commit("dialog/openUpdatePasswordDialog");
     },
-    editDialog(item) {
+    editUserDialog(item) {
       this.userToEdit = item;
-      this.$store.commit("dialog/openUserDialog", {
+      this.$store.commit("dialog/openEditUserDialog", {
         title: "Munkatárs adatainak módosítása",
-        edit: true
       });
     },
     newUserDialog() {
-      this.$store.commit("dialog/openUserDialog", {
-        title: "Új munkatárs hozzáadása",
-        edit: false
+      this.$store.commit("dialog/openNewUserDialog", {
+        title: "Munkatárs adatainak módosítása",
       });
     },
-    editOrAddUser(response) {
-      if (response.edit) {
-        console.log("edit");
-        ApiService.PUT("user/any", response.user)
-          .then((response) => {
-            console.log("success");
-            this.userToEdit =  response.user;
-            this.$store.commit("showMessage", {
-              active: true,
-              color: "success",
-              message: "Sikeres módosítás",
-            });
-          })
-          .catch((error) => {
-            this.$store.commit("showMessage", {
-              active: true,
-              color: "error",
-              message: "Sikertelen mentés: " + error.message,
-            });
+    addUser(user) {
+      ApiService.POST("user/create", user)
+        .then((response) => {
+          this.users.push(response.data);
+          this.$store.commit("showMessage", {
+            active: true,
+            color: "success",
+            message: "Sikeres mentés",
           });
-      } else {
-        console.log("new");
-        ApiService.POST("user/create", response.user)
-          .then((response) => {
-            this.users.push(response.data);
-            this.$store.commit("showMessage", {
-              active: true,
-              color: "success",
-              message: "Sikeres mentés",
-            });
-          })
-          .catch((error) => {
-            this.$store.commit("showMessage", {
-              active: true,
-              color: "error",
-              message: "Sikertelen mentés: " + error.response.data,
-            });
+        })
+        .catch((error) => {
+          this.$store.commit("showMessage", {
+            active: true,
+            color: "error",
+            message: "Sikertelen mentés: " + error.response.data,
           });
-      }
+        });
+    },
+    editUser(user) {
+      ApiService.PUT("user/any", user)
+        .then((response) => {
+          console.log("success");
+          this.userToEdit = user;
+          this.$store.commit("showMessage", {
+            active: true,
+            color: "success",
+            message: "Sikeres módosítás",
+          });
+        })
+        .catch((error) => {
+          this.$store.commit("showMessage", {
+            active: true,
+            color: "error",
+            message: "Sikertelen mentés: " + error.message,
+          });
+        });
     },
     deleteUser() {
       var that = this;
