@@ -9,6 +9,7 @@ import lms.backend.auth.dto.UserDTO;
 import lms.backend.auth.model.Role;
 import lms.backend.auth.model.RoleName;
 import lms.backend.dao.UserRepository;
+import lms.backend.exception.CustomMessageException;
 import lms.backend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -69,6 +71,12 @@ public class AuthController {
         roleRepository.save(new Role(RoleName.ROLE_USER));
 
         return new ResponseEntity<>("Admin and user roles successfully added!",
+                HttpStatus.OK);
+    }
+    @PostMapping("/ping")
+    public ResponseEntity<?> echo() {
+
+        return new ResponseEntity<>("Pong!",
                 HttpStatus.OK);
     }
     @PostMapping("/setup/admin")

@@ -126,8 +126,10 @@ export default {
     editUser(user) {
       ApiService.PUT("user/any", user)
         .then((response) => {
-          console.log("success");
-          this.userToEdit = user;
+          let itemIndex = this.users.indexOf(this.userToEdit);
+          let editedItem = user;
+          this.users.splice(itemIndex, 1, editedItem);
+          console.log(user);
           this.$store.commit("showMessage", {
             active: true,
             color: "success",
