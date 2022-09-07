@@ -75,8 +75,8 @@ public class UserController {
 
     @Secured("ROLE_USER")
     @PutMapping("/password")
-    public ResponseEntity<?> updateUserPassword( @RequestParam("password") String password,
-                                                 @RequestParam("oldpassword") String oldPassword) {
+    public ResponseEntity<?> updateUserPassword( @RequestParam("new") String password,
+                                                 @RequestParam("old") String oldPassword) {
         try {
             this.userService.updateUserPassword(password, oldPassword);
         } catch (Exception e) {

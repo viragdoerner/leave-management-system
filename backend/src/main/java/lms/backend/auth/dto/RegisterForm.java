@@ -16,7 +16,7 @@ public class RegisterForm {
     private String fullname;
 
     @NotBlank
-    @Size(min = 6, max = 40)
+    @Size(min = 8, max = 40)
     private String password;
 
     @NotBlank

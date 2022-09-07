@@ -136,6 +136,7 @@ public class UserService {
             throw new CustomMessageException("Wrong password!");
         }
         currentUser.setPassword(encoder.encode(password));
+        userRepository.save(currentUser);
     }
 
     private boolean checkIfValidOldPassword(User currentUser, String oldPassword) {

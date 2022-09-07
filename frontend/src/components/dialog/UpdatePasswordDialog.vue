@@ -7,24 +7,39 @@
     <v-card>
       <v-card-title> Jelszó csere </v-card-title>
       <v-card-text>
-        <v-form ref="loginForm" v-model="valid" lazy-validation>
+        <v-form ref="passwordForm" v-model="valid" lazy-validation>
           <v-text-field
             v-model="form.oldPassword"
             label="Jelenlegi jelszavad"
-            name="password"
             :rules="[rules.required]"
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="show1 ? 'text' : 'password'"
+            @click:append="show1 = !show1"
+            name="password"
+            autocomplete="password"
+            counter
           ></v-text-field>
           <v-text-field
             v-model="form.newPassword"
             label="Új jelszó"
-            name="password"
             :rules="[rules.required, rules.min8]"
+            :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="show2 ? 'text' : 'password'"
+            @click:append="show2 = !show2"
+            name="password"
+            autocomplete="password"
+            counter
           ></v-text-field>
           <v-text-field
             v-model="form.newPassword2"
             label="Új jelszó még egyszer"
-            name="password"
             :rules="[rules.required, rules.min8, rules.match]"
+            :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="show3 ? 'text' : 'password'"
+            @click:append="show3 = !show3"
+            name="password"
+            autocomplete="password"
+            counter
           ></v-text-field>
         </v-form>
       </v-card-text>
@@ -52,6 +67,9 @@ export default {
       newPassword2: "",
     },
     valid: true,
+    show1: false,
+    show2: false,
+    show3: false,
   }),
   computed: {
     ...mapState("dialog", ["updatePasswordDialogData"]),

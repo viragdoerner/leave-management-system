@@ -17,16 +17,21 @@
           v-model="form.fullname"
           label="Név"
           name="name"
-          :rules="[rules.min6, rules.required]"
+          :rules="[rules.min8, rules.required]"
         ></v-text-field>
         <v-text-field
           v-model="form.holidays"
           label="Szabadnapok száma egy évben"
         ></v-text-field>
         <v-text-field
-          
           v-model="form.password"
           label="Jelszó"
+          :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="show ? 'text' : 'password'"
+          @click:append="show = !show"
+          name="password"
+          autocomplete="password"
+          counter
         ></v-text-field>
         <v-checkbox
           v-model="form.saturday"
@@ -53,8 +58,9 @@ export default {
     rules: {
       email: (value) => /.+@.+\..+/.test(value) || "Érvénytelen e-mail",
       required: (value) => !!value || "Kötelező mező.",
-      min6: (value) => (value && value.length >= 6) || "Minimum 6 karakter",
+      min8: (value) => (value && value.length >= 8) || "Minimum 8 karakter",
     },
+    show: true,
   }),
   computed: {
     ...mapState("dialog", ["userNewDialogData"]),
@@ -71,17 +77,17 @@ export default {
     },
   },
   mounted() {
-    this.form = Object.assign({},  this.emptyForm);
+    this.form = Object.assign({}, this.emptyForm);
   },
- 
+
   methods: {
     confirm() {
       this.$store.commit("dialog/closeDialog");
       this.$emit("confirm", this.form);
-      this.form = Object.assign({},  this.emptyForm);
+      this.form = Object.assign({}, this.emptyForm);
     },
     cancel() {
-      this.form = Object.assign({},  this.emptyForm);
+      this.form = Object.assign({}, this.emptyForm);
       this.$store.commit("dialog/closeDialog");
       this.$emit("cancel");
     },
