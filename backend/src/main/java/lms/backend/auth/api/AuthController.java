@@ -106,29 +106,29 @@ public class AuthController {
         return new ResponseEntity<>("Admin user succesfully added!",
                 HttpStatus.OK);
     }
-    @PostMapping("/setup/user")
-    public ResponseEntity<?> setupUser() {
-
-        //leellenőrzöm hogy létre lett-e már hozva ilyen felhasználó
-        if (userRepository.existsByEmail("user@user.com")) {
-            return new ResponseEntity<>("Fail -> Email is already taken!",
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        //hozzáadom az admint
-        User user = new User("A User", "user@user.com","user@user.com",
-                encoder.encode("password"), 50, false);
-
-        Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find. Run POST request /api/auth/setup/roles first!"));
-        roles.add(userRole);
-        user.setRoles(roles);
-
-        userRepository.save(user);
-
-        return new ResponseEntity<>("Simple user succesfully added!",
-                HttpStatus.OK);
-    }
+//    @PostMapping("/setup/user")
+//    public ResponseEntity<?> setupUser() {
+//
+//        //leellenőrzöm hogy létre lett-e már hozva ilyen felhasználó
+//        if (userRepository.existsByEmail("user@user.com")) {
+//            return new ResponseEntity<>("Fail -> Email is already taken!",
+//                    HttpStatus.BAD_REQUEST);
+//        }
+//
+//        //hozzáadom az admint
+//        User user = new User("A User", "user@user.com","user@user.com",
+//                encoder.encode("password"), 50, false);
+//
+//        Set<Role> roles = new HashSet<>();
+//        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+//                .orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find. Run POST request /api/auth/setup/roles first!"));
+//        roles.add(userRole);
+//        user.setRoles(roles);
+//
+//        userRepository.save(user);
+//
+//        return new ResponseEntity<>("Simple user succesfully added!",
+//                HttpStatus.OK);
+//    }
 }
 

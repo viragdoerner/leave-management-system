@@ -39,6 +39,12 @@ public class UserController {
                 HttpStatus.OK);
     }
 
+    @Secured("ROLE_USER")
+    @GetMapping(path = "/current")
+    public UserDTO getCurrentUser(){
+        return this.userService.getCurrentUser();
+    }
+
     @Secured("ROLE_ADMIN")
     @PutMapping("/any")
     public ResponseEntity<?> updateAnyUser(@RequestBody UserDTO user){

@@ -20,10 +20,10 @@
           ></update-password-dialog>
         </v-toolbar>
       </template>
-      <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small @click="confirmDeleteDialog(item)"> mdi-delete </v-icon>
-        <v-icon small @click="editUserDialog(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="updatePasswordDialog(item)"> mdi-lock </v-icon>
+      <template v-slot:[`item.actions`]="{ item }" >
+        <v-icon v-show="item.id != currentUserId" small @click="confirmDeleteDialog(item)"> mdi-delete </v-icon>
+        <v-icon  small @click="editUserDialog(item)"> mdi-pencil </v-icon>
+        <v-icon  small @click="updatePasswordDialog(item)"> mdi-lock </v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize"> Frissítés </v-btn>
@@ -59,6 +59,7 @@ export default {
       { text: "Szombat", sortable: false, value: "saturday" },
       { text: "", value: "actions", sortable: false },
     ],
+    currentUserId: -1,
     users: [],
     userToDelete: {
       id: null,
@@ -99,6 +100,15 @@ export default {
       this.$store.commit("dialog/openEditUserDialog", {
         title: "Munkatárs adatainak módosítása",
       });
+    },
+    getCurrentUser() {
+      ApiService.GET("user/current")
+        .then((response) => {
+          this.currentUserId = response.data.id;
+        })
+        .catch((error) => {
+          
+        });
     },
     newUserDialog() {
       this.$store.commit("dialog/openNewUserDialog", {
@@ -193,6 +203,7 @@ export default {
   },
   mounted() {
     this.initialize();
+    this.getCurrentUser();
   },
 };
 </script>

@@ -13,8 +13,11 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item>
-            <v-btn text @click="logout"> Kijelentkezés </v-btn>
+          <v-list-item class="ma-0 py-0">
+            <v-btn class="ma-0 " small text @click="logout"> Kijelentkezés </v-btn>
+          </v-list-item>
+          <v-list-item class="ma-0 py-0" >
+            <v-btn class="ma-0 " small text to="/account"> Felhasználói fiók</v-btn>
           </v-list-item>
         </v-list>
       </v-menu>

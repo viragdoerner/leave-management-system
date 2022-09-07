@@ -4,6 +4,7 @@ import UserDashboard from '../views/UserDashboard.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import UserManagementDashboard from '../views/UserManagementDashboard.vue'
 import Login from '../views/Login.vue'
+import Account from '../views/Account.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account
   },
   {
     path: '*',

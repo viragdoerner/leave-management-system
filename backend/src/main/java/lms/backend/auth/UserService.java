@@ -117,6 +117,9 @@ public class UserService {
         User user = userRepository.findByEmail(currentUsername).orElseThrow(() -> new RuntimeException("No user has been found with given email"));
         return user;
     }
+    public UserDTO getCurrentUser() {
+        return convertUser(getCurrentFullUser());
+    }
 
     String getCurrentUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
